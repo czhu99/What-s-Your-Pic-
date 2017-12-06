@@ -20,6 +20,10 @@
         <activity android:name=".GameActivity">
 
         </activity>
+
+        <activity android:name=".VerifyPicActivity">
+
+        </activity>
     </application>
 
 </manifest>
