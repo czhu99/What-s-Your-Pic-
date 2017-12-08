@@ -3,6 +3,7 @@ package edu.illinois.finalproject;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             Intent verifyIntent = new Intent(this, VerifyPicActivity.class);
+            verifyIntent.putExtra("Picture", (Bitmap) data.getExtras().get("data"));
             this.startActivity(verifyIntent);
         }
     }
