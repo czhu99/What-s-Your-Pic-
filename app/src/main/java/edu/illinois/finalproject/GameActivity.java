@@ -1,14 +1,12 @@
 package edu.illinois.finalproject;
 
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -61,6 +59,9 @@ public class GameActivity extends AppCompatActivity {
                         .child("image" + loadPhotoNumber + ".jpg");
 
         FirebaseImageLoader firebaseImageLoader = new FirebaseImageLoader();
-        Glide.with(this).using(firebaseImageLoader).load(storageReference).into(photoDisplayView);
+        Glide.with(this).using(firebaseImageLoader)
+                .load(storageReference)
+                .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                .into(photoDisplayView);
     }
 }
