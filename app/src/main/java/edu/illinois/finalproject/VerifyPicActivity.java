@@ -65,7 +65,6 @@ public class VerifyPicActivity extends AppCompatActivity {
         StorageReference storageRef =
                 storage.getReferenceFromUrl("gs://final-project-17c20.appspot.com/images");
         StorageReference imageReference = storageRef.child("image" + photoNumber + ".jpg");
-        photoNumber++;
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteArrayOutputStream);
         byte[] data = byteArrayOutputStream.toByteArray();
