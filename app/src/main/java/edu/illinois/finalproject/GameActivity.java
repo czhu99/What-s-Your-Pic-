@@ -2,6 +2,7 @@ package edu.illinois.finalproject;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,21 +17,33 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 /**
  * Created by Chris Zhu on 12/5/2017.
  */
 
 public class GameActivity extends AppCompatActivity {
     private ImageView photoDisplayView;
-    private TextView guessesTextView;
+    private TextView guessesRemainingTextView;
+    private TextView pointsTextView;
+    private EditText answerEditText;
+
+    private Random random = new Random();
+    private ArrayList<Integer> playedPhotos;
     private String caption;
+    private int guesses = 3;
+    private int points;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         photoDisplayView = (ImageView) findViewById(R.id.photoDisplayView);
-        guessesTextView = (TextView) findViewById(R.id.guessesTextView);
+        guessesRemainingTextView = (TextView) findViewById(R.id.guessesTextView);
+        pointsTextView = (TextView) findViewById(R.id.pointsTextView);
+        answerEditText = (EditText) findViewById(R.id.userGuessEditText);
         loadImage(0);
     }
 
@@ -39,12 +52,12 @@ public class GameActivity extends AppCompatActivity {
      */
     private void loadImage(int loadPhotoNumber) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("image" + loadPhotoNumber);
+        final DatabaseReference myRef = database.getReference("captions/image" + loadPhotoNumber);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 caption = dataSnapshot.getValue(String.class);
-                guessesTextView.setText(caption);
+                guessesRemainingTextView.setText(caption);
             }
 
             @Override
