@@ -3,24 +3,17 @@ package edu.illinois.finalproject;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,7 +24,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
-import java.net.URL;
 
 /**
  * Created by Chris Zhu on 12/5/2017.
@@ -42,8 +34,10 @@ public class VerifyPicActivity extends AppCompatActivity {
     public static final int MAX_CAPTION_LEN = 20;
 
     private boolean emptyReferenceFound = false;
+    private int photoNumber;
 
     private EditText captionEditText;
+    private Bitmap picture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +46,7 @@ public class VerifyPicActivity extends AppCompatActivity {
         captionEditText = (EditText) findViewById(R.id.captionEditText);
 
         Intent intent = getIntent();
-        final Bitmap picture = intent.getParcelableExtra("Picture");
+        picture = intent.getParcelableExtra("Picture");
         ImageView photoDisplayView = (ImageView) findViewById(R.id.uploadImageView);
         photoDisplayView.setImageBitmap(picture);
 
@@ -66,16 +60,14 @@ public class VerifyPicActivity extends AppCompatActivity {
                 } else if (caption.length() > MAX_CAPTION_LEN) {
                     showToast("Caption cannot exceed twenty characters in length.");
                 } else {
-                    setNextPhotoNum();
-                    uploadFile(picture);
-                    uploadCaptionData();
+                    setNextPhotoNumAndUpload();
                     finish();
                 }
             }
         });
     }
 
-    private void setNextPhotoNum() {
+    private void setNextPhotoNumAndUpload() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         emptyReferenceFound = false;
@@ -85,12 +77,14 @@ public class VerifyPicActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 while (!emptyReferenceFound) {
-                    if (dataSnapshot.hasChild("image" + PhotoNumberTracker.photoNumber)) {
-                        PhotoNumberTracker.photoNumber++;
+                    if (dataSnapshot.hasChild("image" + photoNumber)) {
+                        photoNumber++;
                     } else {
                         emptyReferenceFound = true;
                     }
                 }
+                uploadFile(picture);
+                uploadCaptionData();
             }
 
             @Override
@@ -110,7 +104,7 @@ public class VerifyPicActivity extends AppCompatActivity {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef =
                 storage.getReferenceFromUrl("gs://final-project-17c20.appspot.com/images");
-        StorageReference imageReference = storageRef.child("image" + PhotoNumberTracker.photoNumber + ".jpg");
+        StorageReference imageReference = storageRef.child("image" + photoNumber + ".jpg");
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteArrayOutputStream);
         byte[] data = byteArrayOutputStream.toByteArray();
@@ -134,7 +128,7 @@ public class VerifyPicActivity extends AppCompatActivity {
      */
     private void uploadCaptionData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("captions/image" + PhotoNumberTracker.photoNumber);
+        final DatabaseReference myRef = database.getReference("captions/image" + photoNumber);
         final String caption = captionEditText.getText().toString();
         myRef.setValue(caption);
 
