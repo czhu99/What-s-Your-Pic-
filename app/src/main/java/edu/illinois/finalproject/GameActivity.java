@@ -48,7 +48,7 @@ public class GameActivity extends AppCompatActivity {
     private String caption;
 
     private int guessesRemaining = MAX_GUESSES;
-    private int points;
+    private int points = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +58,8 @@ public class GameActivity extends AppCompatActivity {
         guessesRemainingTextView = (TextView) findViewById(R.id.guessesTextView);
         pointsTextView = (TextView) findViewById(R.id.pointsTextView);
 
-        guessesRemainingTextView.setText("Guesses remaining: " + guessesRemaining);
-        pointsTextView.setText("Total points: " + points);
+        guessesRemainingTextView.setText(getString(R.string.guesses_remaining) + guessesRemaining);
+        pointsTextView.setText(getString(R.string.total_points) + Integer.toString(points));
 
         getRandomUnusedNumberAndLoadData();
 
@@ -71,7 +71,8 @@ public class GameActivity extends AppCompatActivity {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KEYCODE_ENTER && event.getAction() == ACTION_DOWN) {
                     makeGuess();
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager imm =
+                            (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     return true;
                 }
@@ -82,19 +83,20 @@ public class GameActivity extends AppCompatActivity {
 
     private void getRandomUnusedNumberAndLoadData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("captions");
+        DatabaseReference myRef = database.getReference(getString(R.string.captions));
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int counter = 0;
                 while (true) {
                     if (counter > 100) {
-                        showToast("No unplayed images remaining.");
+                        showToast(getString(R.string.no_unplayed_rmng));
                         finish();
                         return;
                     }
                     int number = random.nextInt(MAX_PHOTOS);
-                    if (dataSnapshot.hasChild("image" + number) && !playedPhotos.contains(number)) {
+                    if (dataSnapshot.hasChild(getString(R.string.image) + number) &&
+                            !playedPhotos.contains(number)) {
                         playedPhotos.add(number);
                         nextNumber = number;
                         loadImageAndCaption(nextNumber);
@@ -116,7 +118,8 @@ public class GameActivity extends AppCompatActivity {
      */
     private void loadImageAndCaption(int loadPhotoNumber) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("captions/image" + loadPhotoNumber);
+        final DatabaseReference myRef =
+                database.getReference(getString(R.string.captions_sub_image) + loadPhotoNumber);
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -131,8 +134,9 @@ public class GameActivity extends AppCompatActivity {
 
         StorageReference storageReference =
                 FirebaseStorage.getInstance()
-                        .getReferenceFromUrl("gs://final-project-17c20.appspot.com/images")
-                        .child("image" + loadPhotoNumber + ".jpg");
+                        .getReferenceFromUrl(getString(R.string.storage_directory_fb))
+                        .child(getString(R.string.image) + loadPhotoNumber
+                                + getString(R.string.dot_jpg));
 
         FirebaseImageLoader firebaseImageLoader = new FirebaseImageLoader();
         Glide.with(this).using(firebaseImageLoader)
@@ -151,24 +155,26 @@ public class GameActivity extends AppCompatActivity {
             } else if (totalGuessesMade == 2) {
                 points += 2;
             } else points += 3;
-            pointsTextView.setText("Total points: " + points);
+            pointsTextView.setText(getString(R.string.total_pts) + points);
 
-            Intent playAgainIntent = new Intent(this, PlayAgainActivity.class);
-            playAgainIntent.putExtra("Guesses", "You guessed right in " + totalGuessesMade + " tries. Play again?");
-            startActivity(playAgainIntent);
+            Intent againIntent = new Intent(this, PlayAgainActivity.class);
+            againIntent.putExtra(getString(R.string.guesses), getString(R.string.you_guessed_right_in)
+                    + totalGuessesMade + getString(R.string.tries_play_again));
+            startActivity(againIntent);
             guessesRemaining = MAX_GUESSES;
-            guessesRemainingTextView.setText("Guesses remaining: " + guessesRemaining);
+            guessesRemainingTextView.setText(getString(R.string.guesses_rmng) + guessesRemaining);
             getRandomUnusedNumberAndLoadData();
         } else {
             if (guessesRemaining == 0) {
                 Intent playAgainIntent = new Intent(this, PlayAgainActivity.class);
-                playAgainIntent.putExtra("Guesses", "You did not guess right. Play again?");
+                playAgainIntent.putExtra(getString(R.string.guesses),
+                        getString(R.string.did_not_guess_right));
                 startActivity(playAgainIntent);
                 guessesRemaining = MAX_GUESSES;
                 getRandomUnusedNumberAndLoadData();
             } else {
-                guessesRemainingTextView.setText("Guesses remaining: " + guessesRemaining);
-                showToast("Incorrect. Try again");
+                guessesRemainingTextView.setText(getString(R.string.guesses_rmng) + guessesRemaining);
+                showToast(getString(R.string.incorrect_try_again));
             }
         }
     }

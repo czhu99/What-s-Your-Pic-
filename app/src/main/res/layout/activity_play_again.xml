@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="38dp"
-        android:text="Yes"
+        android:text="@string/yes"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="38dp"
-        android:text="No"
+        android:text="@string/no"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/yesButton"
@@ -36,7 +36,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="89dp"
-        android:text="You guessed this pic right in! Play again?"
+        android:text="@string/you_guessed_this_pic_right_in_play_again"
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
         android:textSize="32sp"

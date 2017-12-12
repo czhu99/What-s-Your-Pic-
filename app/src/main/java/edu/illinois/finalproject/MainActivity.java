@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
             Intent verifyIntent = new Intent(this, VerifyPicActivity.class);
-            verifyIntent.putExtra("Picture", (Bitmap) data.getExtras().get("data"));
+            verifyIntent.putExtra(getString(R.string.picture),
+                    (Bitmap) data.getExtras().get(getString(R.string.data)));
             this.startActivity(verifyIntent);
 
             //File imageFile = new File(Environment.getExternalStorageDirectory(), "MyPhoto.jpg");

@@ -18,7 +18,7 @@ public class PlayAgainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_play_again);
 
         Intent intent = getIntent();
-        String message = intent.getExtras().getString("Guesses");
+        String message = intent.getExtras().getString("guesses");
 
         TextView messageTextView = (TextView) findViewById(R.id.gameCompleteMessageTextView);
         messageTextView.setText(message);

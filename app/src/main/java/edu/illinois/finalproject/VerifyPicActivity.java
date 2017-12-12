@@ -49,7 +49,7 @@ public class VerifyPicActivity extends AppCompatActivity {
         ImageView photoDisplayView = (ImageView) findViewById(R.id.uploadImageView);
 
         Intent intent = getIntent();
-        picture = intent.getParcelableExtra("Picture");
+        picture = intent.getParcelableExtra(getString(R.string.picture));
         photoDisplayView.setImageBitmap(picture);
 
 
@@ -59,9 +59,9 @@ public class VerifyPicActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String caption = captionEditText.getText().toString();
                 if (caption.length() < MIN_CAPTION_LEN) {
-                    showToast("Caption must be at least two characters in length.");
+                    showToast(getString(R.string.short_caption));
                 } else if (caption.length() > MAX_CAPTION_LEN) {
-                    showToast("Caption cannot exceed twenty characters in length.");
+                    showToast(getString(R.string.long_caption));
                 } else {
                     setNextPhotoNumAndUpload();
                     finish();
@@ -75,12 +75,12 @@ public class VerifyPicActivity extends AppCompatActivity {
 
         emptyReferenceFound = false;
 
-        DatabaseReference myRef = database.getReference("captions");
+        DatabaseReference myRef = database.getReference(getString(R.string.captions));
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 while (!emptyReferenceFound) {
-                    if (dataSnapshot.hasChild("image" + photoNumber)) {
+                    if (dataSnapshot.hasChild(getString(R.string.image) + photoNumber)) {
                         photoNumber++;
                     } else {
                         emptyReferenceFound = true;
@@ -106,8 +106,9 @@ public class VerifyPicActivity extends AppCompatActivity {
     private void uploadFile(Bitmap bitmap) {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef =
-                storage.getReferenceFromUrl("gs://final-project-17c20.appspot.com/images");
-        StorageReference imageReference = storageRef.child("image" + photoNumber + ".jpg");
+                storage.getReferenceFromUrl(getString(R.string.storage_directory_fb));
+        StorageReference imageReference = storageRef.child(getString(R.string.image) +
+                photoNumber + getString(R.string.dot_jpg));
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         byte[] data = byteArrayOutputStream.toByteArray();
@@ -115,12 +116,12 @@ public class VerifyPicActivity extends AppCompatActivity {
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                showToast("Upload failed.");
+                showToast(getString(R.string.failed_upload));
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                showToast("Image uploaded.");
+                showToast(getString(R.string.success_upload));
             }
         });
     }
@@ -131,21 +132,10 @@ public class VerifyPicActivity extends AppCompatActivity {
      */
     private void uploadCaptionData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("captions/image" + photoNumber);
+        final DatabaseReference myRef =
+                database.getReference(getString(R.string.captions_sub_image) + photoNumber);
         final String caption = captionEditText.getText().toString();
         myRef.setValue(caption);
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
     private void showToast(String message) {

@@ -1,3 +1,34 @@
 <resources>
     <string name="app_name">What\'s Your Pic?</string>
+    <string name="what_s_your_pic">What\'s Your Pic?</string>
+    <string name="play_game">Play Game</string>
+    <string name="options">Options</string>
+    <string name="add_a_pic">Add a Pic</string>
+    <string name="caption_photo">Caption Photo</string>
+    <string name="upload_picture">Upload Picture</string>
+    <string name="guess">Guess</string>
+    <string name="total_points">Total Points:&#160;</string>
+    <string name="guesses_remaining">Guesses Remaining:&#160;</string>
+    <string name="no">No</string>
+    <string name="you_guessed_this_pic_right_in_play_again">You guessed this pic right in ! Play again?</string>
+    <string name="yes">Yes</string>
+    <string name="short_caption">Caption must be at least two characters in length.</string>
+    <string name="long_caption">Caption cannot exceed twenty characters in length.</string>
+    <string name="failed_upload">Upload failed.</string>
+    <string name="success_upload">Image uploaded.</string>
+    <string name="storage_directory_fb">gs://final-project-17c20.appspot.com/images</string>
+    <string name="picture">picture</string>
+    <string name="captions">captions</string>
+    <string name="image">image</string>
+    <string name="dot_jpg">.jpg</string>
+    <string name="captions_sub_image">captions/image</string>
+    <string name="no_unplayed_rmng">No unplayed images remaining.</string>
+    <string name="total_pts">Total points:&#160;</string>
+    <string name="you_guessed_right_in">You guessed right in&#160;</string>
+    <string name="tries_play_again">&#160;tries. Play again?</string>
+    <string name="guesses_rmng">Guesses remaining:&#160;</string>
+    <string name="guesses">guesses</string>
+    <string name="did_not_guess_right">You did not guess right.&#160;Play again?</string>
+    <string name="incorrect_try_again">Incorrect.&#160;Try again</string>
+    <string name="data">data</string>
 </resources>
