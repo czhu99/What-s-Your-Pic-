@@ -1,6 +1,7 @@
 package edu.illinois.finalproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -25,11 +26,17 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static android.view.KeyEvent.ACTION_DOWN;
+import static android.view.KeyEvent.KEYCODE_ENTER;
+
 /**
  * Created by Chris Zhu on 12/5/2017.
  */
 
 public class GameActivity extends AppCompatActivity {
+    public static final int MAX_PHOTOS = 100;
+    public static final int MAX_GUESSES = 3;
+
     private ImageView photoDisplayView;
     private TextView guessesRemainingTextView;
     private TextView pointsTextView;
@@ -40,7 +47,7 @@ public class GameActivity extends AppCompatActivity {
     private int nextNumber;
     private String caption;
 
-    private int guesses = 3;
+    private int guessesRemaining = MAX_GUESSES;
     private int points;
 
     @Override
@@ -59,7 +66,7 @@ public class GameActivity extends AppCompatActivity {
         answerEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                if (keyCode == KEYCODE_ENTER && event.getAction() == ACTION_DOWN) {
                     makeGuess();
                     InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -76,14 +83,21 @@ public class GameActivity extends AppCompatActivity {
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                int counter = 0;
                 while (true) {
-                    int number = random.nextInt(100);
+                    if (counter > 100) {
+                        showToast("No unplayed images remaining.");
+                        finish();
+                        return;
+                    }
+                    int number = random.nextInt(MAX_PHOTOS);
                     if (dataSnapshot.hasChild("image" + number) && !playedPhotos.contains(number)) {
                         playedPhotos.add(number);
                         nextNumber = number;
                         loadImageAndCaption(nextNumber);
                         return;
                     }
+                    counter++;
                 }
             }
 
@@ -95,7 +109,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     /**
-     * Takes specified photo from the database and loads it into the ImageView
+     * Takes specified photo and it image from the database and loads it into the ImageView
      */
     private void loadImageAndCaption(int loadPhotoNumber) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -125,14 +139,27 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void makeGuess() {
+        guessesRemaining--;
         String guess = answerEditText.getText().toString();
         if (guess.equalsIgnoreCase(caption)) {
-            showToast("Correct!");
+            int totalGuesses = MAX_GUESSES - guessesRemaining;
+            Intent playAgainIntent = new Intent(this, PlayAgainActivity.class);
+            playAgainIntent.putExtra("Guesses", "You guessed right in " + totalGuesses + " tries. Play again?");
+            startActivity(playAgainIntent);
+            guessesRemaining = MAX_GUESSES;
+            getRandomUnusedNumberAndLoadData();
         } else {
-            showToast("Incorrect.");
+            if (guessesRemaining == 0) {
+                Intent playAgainIntent = new Intent(this, PlayAgainActivity.class);
+                playAgainIntent.putExtra("Guesses", "You did not guess right. Play again?");
+                startActivity(playAgainIntent);
+                guessesRemaining = MAX_GUESSES;
+                getRandomUnusedNumberAndLoadData();
+            } else {
+                showToast("Incorrect. Try again");
+            }
         }
     }
-
 
     public void showToast(String message) {
         //outline for toast code segment from

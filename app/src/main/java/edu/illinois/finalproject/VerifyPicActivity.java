@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -42,13 +43,15 @@ public class VerifyPicActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_verifypic);
+        setContentView(R.layout.activity_verify_pic);
+
         captionEditText = (EditText) findViewById(R.id.captionEditText);
+        ImageView photoDisplayView = (ImageView) findViewById(R.id.uploadImageView);
 
         Intent intent = getIntent();
         picture = intent.getParcelableExtra("Picture");
-        ImageView photoDisplayView = (ImageView) findViewById(R.id.uploadImageView);
         photoDisplayView.setImageBitmap(picture);
+
 
         final Button uploadButton = (Button) findViewById(R.id.uploadButton);
         uploadButton.setOnClickListener(new View.OnClickListener() {
@@ -106,7 +109,7 @@ public class VerifyPicActivity extends AppCompatActivity {
                 storage.getReferenceFromUrl("gs://final-project-17c20.appspot.com/images");
         StorageReference imageReference = storageRef.child("image" + photoNumber + ".jpg");
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteArrayOutputStream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         byte[] data = byteArrayOutputStream.toByteArray();
         UploadTask uploadTask = imageReference.putBytes(data);
         uploadTask.addOnFailureListener(new OnFailureListener() {
