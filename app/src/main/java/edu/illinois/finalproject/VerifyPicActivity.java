@@ -70,6 +70,9 @@ public class VerifyPicActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Finds next available reference to send image to and calls uploadFile()
+     */
     private void setNextPhotoNumAndUpload() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
@@ -138,6 +141,10 @@ public class VerifyPicActivity extends AppCompatActivity {
         myRef.setValue(caption);
     }
 
+    /**
+     * Generates a toast message
+     * @param message The message
+     */
     private void showToast(String message) {
         //outline for toast code segment from
         //https://developer.android.com/guide/topics/ui/notifiers/toasts.html

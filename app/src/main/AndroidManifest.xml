@@ -13,7 +13,9 @@
         android:logo="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,15 +23,22 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".GameActivity">
+        <activity
+            android:name=".GameActivity"
+            android:screenOrientation="portrait">
             <uses-library android:name='com.github.bumptech.glide:glide:3.7.0' />
-        </activity>
-
-        <activity android:name=".VerifyPicActivity">
 
         </activity>
 
-        <activity android:name=".PlayAgainActivity">
+        <activity
+            android:name=".VerifyPicActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <activity
+            android:name=".PlayAgainActivity"
+            android:screenOrientation="portrait">
 
         </activity>
     </application>

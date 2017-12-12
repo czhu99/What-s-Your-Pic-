@@ -81,6 +81,9 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Finds a random photo number that has not been seen yet and reads the data in for that photo
+     */
     private void getRandomUnusedNumberAndLoadData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(getString(R.string.captions));
@@ -145,34 +148,50 @@ public class GameActivity extends AppCompatActivity {
                 .into(photoDisplayView);
     }
 
+    /**
+     * Takes the text input from the user and uses it as a guess for the current caption
+     */
     public void makeGuess() {
         guessesRemaining--;
         String guess = answerEditText.getText().toString();
-        if (guess.equalsIgnoreCase(caption)) {
+        if (guess.equalsIgnoreCase(caption)) { //when the guess is correct
             int totalGuessesMade = MAX_GUESSES - guessesRemaining;
+
+            //used to determine if user is told number of "tries" or one "try"
+            String triesString = getString(R.string.tries_play_again);
             if (totalGuessesMade == 3) {
                 points += 1;
             } else if (totalGuessesMade == 2) {
                 points += 2;
-            } else points += 3;
+            } else {
+                points += 3;
+                triesString = getString(R.string.try_play_again);
+            }
             pointsTextView.setText(getString(R.string.total_pts) + points);
 
+
+            //launches the "play again" screen with appropriate information in the message
             Intent againIntent = new Intent(this, PlayAgainActivity.class);
-            againIntent.putExtra(getString(R.string.guesses), getString(R.string.you_guessed_right_in)
-                    + totalGuessesMade + getString(R.string.tries_play_again));
+            againIntent.putExtra(getString(R.string.guesses),
+                    getString(R.string.you_guessed_right_in)
+                            + totalGuessesMade + triesString);
             startActivity(againIntent);
+
             guessesRemaining = MAX_GUESSES;
             guessesRemainingTextView.setText(getString(R.string.guesses_rmng) + guessesRemaining);
+            answerEditText.setText("");
             getRandomUnusedNumberAndLoadData();
-        } else {
-            if (guessesRemaining == 0) {
+        } else { //when the guess is incorrect
+            if (guessesRemaining == 0) { //when the user has run out of tries
+                //launches the "play again" screen with appropriate information in the message
                 Intent playAgainIntent = new Intent(this, PlayAgainActivity.class);
                 playAgainIntent.putExtra(getString(R.string.guesses),
                         getString(R.string.did_not_guess_right));
                 startActivity(playAgainIntent);
                 guessesRemaining = MAX_GUESSES;
+                answerEditText.setText("");
                 getRandomUnusedNumberAndLoadData();
-            } else {
+            } else { //when the user has tries remaining
                 guessesRemainingTextView.setText(getString(R.string.guesses_rmng) + guessesRemaining);
                 showToast(getString(R.string.incorrect_try_again));
             }

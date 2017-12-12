@@ -31,4 +31,5 @@
     <string name="did_not_guess_right">You did not guess right.&#160;Play again?</string>
     <string name="incorrect_try_again">Incorrect.&#160;Try again</string>
     <string name="data">data</string>
+    <string name="try_play_again">&#160;try. Play again?</string>
 </resources>
