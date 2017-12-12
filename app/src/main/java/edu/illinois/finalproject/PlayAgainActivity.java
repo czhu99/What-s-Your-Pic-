@@ -39,4 +39,8 @@ public class PlayAgainActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void endGame() {
+
+    }
 }

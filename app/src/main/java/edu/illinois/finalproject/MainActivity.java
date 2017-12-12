@@ -32,16 +32,18 @@ public class MainActivity extends AppCompatActivity {
         //StrictMode.setVmPolicy(builder.build());
 
         Button playButton = (Button) findViewById(R.id.playButton);
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Context context = v.getContext();
-                Intent gameIntent = new Intent(context, GameActivity.class);
-                context.startActivity(gameIntent);
-            }
-        });
+        runPlayButtonOperations(playButton);
 
         Button addPicButton = (Button) findViewById(R.id.addPicButton);
+        runAddPicButtonOperations(addPicButton);
+    }
+
+    /**
+     * Launches intent for taking a picture on button press
+     *
+     * @param addPicButton the button for adding a picture
+     */
+    private void runAddPicButtonOperations(Button addPicButton) {
         addPicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,6 +58,29 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Launches intent for GameActivity on button press
+     *
+     * @param playButton the button for playing the game
+     */
+    private void runPlayButtonOperations(Button playButton) {
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Context context = v.getContext();
+                Intent gameIntent = new Intent(context, GameActivity.class);
+                context.startActivity(gameIntent);
+            }
+        });
+    }
+
+    /**
+     * Creates intent for VerifyPic if camera operation was successful
+     *
+     * @param requestCode Request code called
+     * @param resultCode  Result code given
+     * @param data        The intent returned from activity
+     */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {

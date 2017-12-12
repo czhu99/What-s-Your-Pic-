@@ -53,8 +53,16 @@ public class VerifyPicActivity extends AppCompatActivity {
         picture = intent.getParcelableExtra(getString(R.string.picture));
         photoDisplayView.setImageBitmap(picture);
 
-
         final Button uploadButton = (Button) findViewById(R.id.uploadButton);
+        runUploadButtonOperations(uploadButton);
+    }
+
+    /**
+     * Determines if text input is valid then sets that text to the photo and uploads both
+     *
+     * @param uploadButton The button used to upload picture
+     */
+    private void runUploadButtonOperations(Button uploadButton) {
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,7 +80,7 @@ public class VerifyPicActivity extends AppCompatActivity {
     }
 
     /**
-     * Finds next available reference to send image to and calls uploadFile()
+     * Finds next available reference to send image to, calls uploadFile() and uploadCaptionData()
      */
     private void setNextPhotoNumAndUpload() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -100,7 +108,6 @@ public class VerifyPicActivity extends AppCompatActivity {
             }
         });
     }
-
 
     /**
      * Uploads a photo into the database
@@ -144,6 +151,7 @@ public class VerifyPicActivity extends AppCompatActivity {
 
     /**
      * Generates a toast message
+     *
      * @param message The message
      */
     private void showToast(String message) {

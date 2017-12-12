@@ -34,7 +34,6 @@ import static android.view.KeyEvent.KEYCODE_ENTER;
  */
 
 public class GameActivity extends AppCompatActivity {
-    public static final int MAX_PHOTOS = 100;
     public static final int MAX_GUESSES = 3;
     public static final int MID_GUESSES = 2;
     public static final int MAX_POINTS = 3;
@@ -53,6 +52,8 @@ public class GameActivity extends AppCompatActivity {
     private String caption;
     private int guessesRemaining = MAX_GUESSES;
     private int points = 0;
+    private int numPhotosInDatabase = 0;
+    private int numPhotosLoaded = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,7 @@ public class GameActivity extends AppCompatActivity {
         guessesRemainingTextView.setText(getString(R.string.guesses_remaining) + guessesRemaining);
         pointsTextView.setText(getString(R.string.total_points) + Integer.toString(points));
 
-        getRandomUnusedNumberAndLoadData();
+        getRandomUnusedPhotoAndLoadData();
 
         answerEditText = (EditText) findViewById(R.id.userGuessEditText);
         answerEditText.setFocusableInTouchMode(true);
@@ -75,9 +76,9 @@ public class GameActivity extends AppCompatActivity {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KEYCODE_ENTER && event.getAction() == ACTION_DOWN) {
                     makeGuess();
-                    InputMethodManager imm =
+                    InputMethodManager inputMethodManager =
                             (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     return true;
                 }
                 return false;
@@ -88,28 +89,31 @@ public class GameActivity extends AppCompatActivity {
     /**
      * Finds a random photo number that has not been seen yet and reads the data in for that photo
      */
-    private void getRandomUnusedNumberAndLoadData() {
+    private void getRandomUnusedPhotoAndLoadData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference(getString(R.string.captions));
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                int counter = 0;
+                while (dataSnapshot.hasChild(getString(R.string.image) + numPhotosInDatabase)) {
+                    numPhotosInDatabase++;
+                }
                 while (true) {
-                    if (counter > MAX_PHOTOS) {
+                    if (numPhotosLoaded == numPhotosInDatabase) {
                         showToast(getString(R.string.no_unplayed_rmng));
+                        //TODO launch a FinishGameActivity that displays all game info
                         finish();
                         return;
                     }
-                    int randomNumber = random.nextInt(MAX_PHOTOS);
+                    int randomNumber = random.nextInt(numPhotosInDatabase);
                     if (dataSnapshot.hasChild(getString(R.string.image) + randomNumber) &&
                             !playedPhotos.contains(randomNumber)) {
                         playedPhotos.add(randomNumber);
                         nextNumber = randomNumber;
                         loadImageAndCaption(nextNumber);
+                        numPhotosLoaded++;
                         return;
                     }
-                    counter++;
                 }
             }
 
@@ -164,7 +168,7 @@ public class GameActivity extends AppCompatActivity {
             //used to determine if user is told they won in number of "tries" or one "try"
             String triesString = getString(R.string.tries_play_again);
             if (totalGuessesMade == MAX_GUESSES) {
-                points ++;
+                points++;
             } else if (totalGuessesMade == MID_GUESSES) {
                 points += MID_POINTS;
             } else {
@@ -173,33 +177,40 @@ public class GameActivity extends AppCompatActivity {
             }
             pointsTextView.setText(getString(R.string.total_pts) + points);
 
-
-            //launches the "play again" screen with appropriate information in the message
-            Intent againIntent = new Intent(this, PlayAgainActivity.class);
-            againIntent.putExtra(getString(R.string.guesses),
-                    getString(R.string.you_guessed_right_in)
-                            + totalGuessesMade + triesString);
-            startActivity(againIntent);
+            if (numPhotosLoaded != numPhotosInDatabase) {
+                //launches the "play again" screen with "guessed right" message
+                launchPlayAgainIntent(getString(R.string.you_guessed_right_in)
+                        + totalGuessesMade + triesString);
+            }
 
             guessesRemaining = MAX_GUESSES;
             guessesRemainingTextView.setText(getString(R.string.guesses_rmng) + guessesRemaining);
             answerEditText.setText("");
-            getRandomUnusedNumberAndLoadData();
+            getRandomUnusedPhotoAndLoadData();
         } else { //when the guess is incorrect
-            if (guessesRemaining == 0) { //when the user has run out of tries
-                //launches the "play again" screen with appropriate information in the message
-                Intent playAgainIntent = new Intent(this, PlayAgainActivity.class);
-                playAgainIntent.putExtra(getString(R.string.guesses),
-                        getString(R.string.did_not_guess_right));
-                startActivity(playAgainIntent);
+            //when the user has run out of tries and there are still unused photos
+            if (guessesRemaining == 0 && numPhotosLoaded != numPhotosInDatabase) {
+                //launches the "play again" screen with "did not guess right" message
+                launchPlayAgainIntent(getString(R.string.did_not_guess_right));
                 guessesRemaining = MAX_GUESSES;
                 answerEditText.setText("");
-                getRandomUnusedNumberAndLoadData();
+                getRandomUnusedPhotoAndLoadData();
             } else { //when the user has tries remaining
                 guessesRemainingTextView.setText(getString(R.string.guesses_rmng) + guessesRemaining);
                 showToast(getString(R.string.incorrect_try_again));
             }
         }
+    }
+
+    /**
+     * Launches a PlayAgainActivity with appropriate message
+     *
+     * @param message
+     */
+    private void launchPlayAgainIntent(String message) {
+        Intent againIntent = new Intent(this, PlayAgainActivity.class);
+        againIntent.putExtra(getString(R.string.guesses), message);
+        startActivity(againIntent);
     }
 
     public void showToast(String message) {
