@@ -36,6 +36,10 @@ import static android.view.KeyEvent.KEYCODE_ENTER;
 public class GameActivity extends AppCompatActivity {
     public static final int MAX_PHOTOS = 100;
     public static final int MAX_GUESSES = 3;
+    public static final int MID_GUESSES = 2;
+    public static final int MAX_POINTS = 3;
+    public static final int MID_POINTS = 2;
+
 
     private ImageView photoDisplayView;
     private TextView guessesRemainingTextView;
@@ -44,9 +48,9 @@ public class GameActivity extends AppCompatActivity {
 
     private Random random = new Random();
     private ArrayList<Integer> playedPhotos = new ArrayList<>();
+
     private int nextNumber;
     private String caption;
-
     private int guessesRemaining = MAX_GUESSES;
     private int points = 0;
 
@@ -92,16 +96,16 @@ public class GameActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 int counter = 0;
                 while (true) {
-                    if (counter > 100) {
+                    if (counter > MAX_PHOTOS) {
                         showToast(getString(R.string.no_unplayed_rmng));
                         finish();
                         return;
                     }
-                    int number = random.nextInt(MAX_PHOTOS);
-                    if (dataSnapshot.hasChild(getString(R.string.image) + number) &&
-                            !playedPhotos.contains(number)) {
-                        playedPhotos.add(number);
-                        nextNumber = number;
+                    int randomNumber = random.nextInt(MAX_PHOTOS);
+                    if (dataSnapshot.hasChild(getString(R.string.image) + randomNumber) &&
+                            !playedPhotos.contains(randomNumber)) {
+                        playedPhotos.add(randomNumber);
+                        nextNumber = randomNumber;
                         loadImageAndCaption(nextNumber);
                         return;
                     }
@@ -157,14 +161,14 @@ public class GameActivity extends AppCompatActivity {
         if (guess.equalsIgnoreCase(caption)) { //when the guess is correct
             int totalGuessesMade = MAX_GUESSES - guessesRemaining;
 
-            //used to determine if user is told number of "tries" or one "try"
+            //used to determine if user is told they won in number of "tries" or one "try"
             String triesString = getString(R.string.tries_play_again);
-            if (totalGuessesMade == 3) {
-                points += 1;
-            } else if (totalGuessesMade == 2) {
-                points += 2;
+            if (totalGuessesMade == MAX_GUESSES) {
+                points ++;
+            } else if (totalGuessesMade == MID_GUESSES) {
+                points += MID_POINTS;
             } else {
-                points += 3;
+                points += MAX_POINTS;
                 triesString = getString(R.string.try_play_again);
             }
             pointsTextView.setText(getString(R.string.total_pts) + points);

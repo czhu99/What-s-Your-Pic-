@@ -33,6 +33,7 @@ import java.io.ByteArrayOutputStream;
 public class VerifyPicActivity extends AppCompatActivity {
     public static final int MIN_CAPTION_LEN = 2;
     public static final int MAX_CAPTION_LEN = 20;
+    public static final int MAX_QUALITY = 100; //used for bitmap compression
 
     private boolean emptyReferenceFound = false;
     private int photoNumber;
@@ -113,7 +114,7 @@ public class VerifyPicActivity extends AppCompatActivity {
         StorageReference imageReference = storageRef.child(getString(R.string.image) +
                 photoNumber + getString(R.string.dot_jpg));
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, MAX_QUALITY, byteArrayOutputStream);
         byte[] data = byteArrayOutputStream.toByteArray();
         UploadTask uploadTask = imageReference.putBytes(data);
         uploadTask.addOnFailureListener(new OnFailureListener() {
