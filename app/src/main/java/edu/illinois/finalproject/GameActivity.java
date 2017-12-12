@@ -58,6 +58,9 @@ public class GameActivity extends AppCompatActivity {
         guessesRemainingTextView = (TextView) findViewById(R.id.guessesTextView);
         pointsTextView = (TextView) findViewById(R.id.pointsTextView);
 
+        guessesRemainingTextView.setText("Guesses remaining: " + guessesRemaining);
+        pointsTextView.setText("Total points: " + points);
+
         getRandomUnusedNumberAndLoadData();
 
         answerEditText = (EditText) findViewById(R.id.userGuessEditText);
@@ -68,7 +71,7 @@ public class GameActivity extends AppCompatActivity {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KEYCODE_ENTER && event.getAction() == ACTION_DOWN) {
                     makeGuess();
-                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                     return true;
                 }
@@ -142,11 +145,19 @@ public class GameActivity extends AppCompatActivity {
         guessesRemaining--;
         String guess = answerEditText.getText().toString();
         if (guess.equalsIgnoreCase(caption)) {
-            int totalGuesses = MAX_GUESSES - guessesRemaining;
+            int totalGuessesMade = MAX_GUESSES - guessesRemaining;
+            if (totalGuessesMade == 3) {
+                points += 1;
+            } else if (totalGuessesMade == 2) {
+                points += 2;
+            } else points += 3;
+            pointsTextView.setText("Total points: " + points);
+
             Intent playAgainIntent = new Intent(this, PlayAgainActivity.class);
-            playAgainIntent.putExtra("Guesses", "You guessed right in " + totalGuesses + " tries. Play again?");
+            playAgainIntent.putExtra("Guesses", "You guessed right in " + totalGuessesMade + " tries. Play again?");
             startActivity(playAgainIntent);
             guessesRemaining = MAX_GUESSES;
+            guessesRemainingTextView.setText("Guesses remaining: " + guessesRemaining);
             getRandomUnusedNumberAndLoadData();
         } else {
             if (guessesRemaining == 0) {
@@ -156,6 +167,7 @@ public class GameActivity extends AppCompatActivity {
                 guessesRemaining = MAX_GUESSES;
                 getRandomUnusedNumberAndLoadData();
             } else {
+                guessesRemainingTextView.setText("Guesses remaining: " + guessesRemaining);
                 showToast("Incorrect. Try again");
             }
         }
