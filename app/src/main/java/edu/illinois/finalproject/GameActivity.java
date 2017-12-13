@@ -197,7 +197,8 @@ public class GameActivity extends AppCompatActivity {
             //when the user has run out of tries and there are still unused photos
             if (guessesRemaining == 0 && numPhotosLoaded != numPhotosInDatabase) {
                 //launches the "play again" screen with "did not guess right" message
-                launchPlayAgainIntent(getString(R.string.did_not_guess_right));
+                launchPlayAgainIntent(getString(R.string.did_not_guess_right)
+                        + caption + getString(R.string.quote_try_again));
                 guessesRemaining = MAX_GUESSES;
                 answerEditText.setText("");
                 getRandomUnusedPhotoAndLoadData();
