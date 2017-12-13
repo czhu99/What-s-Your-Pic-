@@ -25,7 +25,8 @@
 
         <activity
             android:name=".GameActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
             <uses-library android:name='com.github.bumptech.glide:glide:3.7.0' />
 
         </activity>

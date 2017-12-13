@@ -12,9 +12,6 @@ import android.widget.TextView;
  */
 
 public class FinishGameActivity extends AppCompatActivity {
-    private int points;
-    private int rounds;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,10 +20,14 @@ public class FinishGameActivity extends AppCompatActivity {
         TextView messageTextView = (TextView) findViewById(R.id.gameCompleteMessageTextView);
 
         Intent intent = getIntent();
-        points = intent.getExtras().getInt(getString(R.string.points));
-        rounds = intent.getExtras().getInt(getString(R.string.rounds));
-        messageTextView.setText(getString(R.string.game_completed_you_earned)
-            + points + getString(R.string.points_in) + rounds + getString(R.string.rounds_exclam));
+        int points = intent.getExtras().getInt(getString(R.string.points));
+        int rounds = intent.getExtras().getInt(getString(R.string.rounds));
+        if (rounds > 1) {
+            messageTextView.setText(getString(R.string.game_completed_you_earned)
+                    + points + getString(R.string.points_in) + rounds + getString(R.string.rounds_exclam));
+        } else
+            messageTextView.setText(getString(R.string.game_completed_you_earned)
+                    + points + getString(R.string.points_in) + rounds + getString(R.string.round_exclam));
 
         Button mainMenuButton = (Button) findViewById(R.id.mainMenuButton);
         mainMenuButton.setOnClickListener(new View.OnClickListener() {

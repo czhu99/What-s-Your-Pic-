@@ -40,4 +40,5 @@
     <string name="game_completed_you_earned">Game completed! You earned&#160;</string>
     <string name="points_in">&#160;points in&#160;</string>
     <string name="rounds_exclam">&#160;rounds!</string>
+    <string name="round_exclam">&#160;round!</string>
 </resources>

@@ -15,7 +15,6 @@ public class PlayAgainActivity extends AppCompatActivity {
     private int points;
     private int rounds;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
