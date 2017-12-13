@@ -41,6 +41,12 @@
             android:screenOrientation="portrait">
 
         </activity>
+
+        <activity
+            android:name=".FinishGameActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
     </application>
 
 </manifest>

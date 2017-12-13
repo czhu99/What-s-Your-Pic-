@@ -99,9 +99,15 @@ public class GameActivity extends AppCompatActivity {
                     numPhotosInDatabase++;
                 }
                 while (true) {
-                    if (numPhotosLoaded == numPhotosInDatabase) {
+                    if (numPhotosLoaded == numPhotosInDatabase) { //when all photos have been played
                         showToast(getString(R.string.no_unplayed_rmng));
-                        //TODO launch a FinishGameActivity that displays all game info
+                        //launches game end activity when no more pictures
+                        Intent finishGameIntent =
+                                new Intent(getApplicationContext(), FinishGameActivity.class);
+                        finishGameIntent.putExtra(getString(R.string.points), points);
+                        finishGameIntent.putExtra(getString(R.string.rounds), numPhotosLoaded);
+                        startActivity(finishGameIntent);
+
                         finish();
                         return;
                     }
@@ -209,6 +215,8 @@ public class GameActivity extends AppCompatActivity {
      */
     private void launchPlayAgainIntent(String message) {
         Intent againIntent = new Intent(this, PlayAgainActivity.class);
+        againIntent.putExtra(getString(R.string.points), points);
+        againIntent.putExtra(getString(R.string.rounds), numPhotosLoaded);
         againIntent.putExtra(getString(R.string.guesses), message);
         startActivity(againIntent);
     }

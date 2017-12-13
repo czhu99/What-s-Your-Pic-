@@ -32,4 +32,11 @@
     <string name="incorrect_try_again">Incorrect.&#160;Try again</string>
     <string name="data">data</string>
     <string name="try_play_again">&#160;try. Play again?</string>
+    <string name="main_menu">Main Menu</string>
+    <string name="game_completed_you_earned_x_points_in_y_rounds">Game completed! You earned x points in y rounds!</string>
+    <string name="points">points</string>
+    <string name="rounds">rounds</string>
+    <string name="game_completed_you_earned">Game completed! You earned&#160;</string>
+    <string name="points_in">&#160;points in&#160;</string>
+    <string name="rounds_exclam">&#160;rounds!</string>
 </resources>

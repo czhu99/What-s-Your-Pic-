@@ -7,41 +7,31 @@
     android:orientation="vertical">
 
     <Button
-        android:id="@+id/yesButton"
+        android:id="@+id/mainMenuButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:layout_marginLeft="38dp"
-        android:text="@string/yes"
+        android:layout_marginLeft="148dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/main_menu"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
-
-    <Button
-        android:id="@+id/noButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="38dp"
-        android:text="@string/no"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintLeft_toRightOf="@+id/yesButton"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
     <TextView
-        android:id="@+id/roundCompleteMessage"
+        android:id="@+id/gameCompleteMessageTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="89dp"
-        android:text="@string/you_guessed_this_pic_right_in_play_again"
+        android:text="@string/game_completed_you_earned_x_points_in_y_rounds"
         android:textAlignment="center"
         android:textColor="@color/colorPrimary"
         android:textSize="32sp"
-        app:layout_constraintBottom_toTopOf="@+id/yesButton"
+        app:layout_constraintBottom_toTopOf="@+id/mainMenuButton"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
