@@ -48,7 +48,6 @@ public class GameActivity extends AppCompatActivity {
     private Random random = new Random();
     private ArrayList<Integer> playedPhotos = new ArrayList<>();
 
-    private int nextNumber;
     private String caption;
     private int guessesRemaining = MAX_GUESSES;
     private int points = 0;
@@ -68,6 +67,7 @@ public class GameActivity extends AppCompatActivity {
 
         getRandomUnusedPhotoAndLoadData();
 
+        //used to make a guess whenever the user presses "enter" on the editText
         answerEditText = (EditText) findViewById(R.id.userGuessEditText);
         answerEditText.setFocusableInTouchMode(true);
         answerEditText.requestFocus();
@@ -115,8 +115,7 @@ public class GameActivity extends AppCompatActivity {
                     if (dataSnapshot.hasChild(getString(R.string.image) + randomNumber) &&
                             !playedPhotos.contains(randomNumber)) {
                         playedPhotos.add(randomNumber);
-                        nextNumber = randomNumber;
-                        loadImageAndCaption(nextNumber);
+                        loadImageAndCaption(randomNumber);
                         numPhotosLoaded++;
                         return;
                     }
@@ -131,7 +130,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     /**
-     * Takes specified photo and it image from the database and loads it into the ImageView
+     * Takes specified photo caption and its image from the database and loads it into the ImageView
      */
     private void loadImageAndCaption(int loadPhotoNumber) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -149,11 +148,9 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
-        StorageReference storageReference =
-                FirebaseStorage.getInstance()
-                        .getReferenceFromUrl(getString(R.string.storage_directory_fb))
-                        .child(getString(R.string.image) + loadPhotoNumber
-                                + getString(R.string.dot_jpg));
+        StorageReference storageReference = FirebaseStorage.getInstance()
+                .getReferenceFromUrl(getString(R.string.storage_directory_fb))
+                .child(getString(R.string.image) + loadPhotoNumber + getString(R.string.dot_jpg));
 
         FirebaseImageLoader firebaseImageLoader = new FirebaseImageLoader();
         Glide.with(this).using(firebaseImageLoader)
@@ -211,6 +208,7 @@ public class GameActivity extends AppCompatActivity {
 
     /**
      * Launches a PlayAgainActivity with appropriate message
+     * Sends over all points, rounds, and guesses information when user wishes to stop playing
      *
      * @param message
      */
@@ -222,6 +220,11 @@ public class GameActivity extends AppCompatActivity {
         startActivity(againIntent);
     }
 
+    /**
+     * Displays a toast message
+     *
+     * @param message The message
+     */
     public void showToast(String message) {
         //outline for toast code segment from
         //https://developer.android.com/guide/topics/ui/notifiers/toasts.html

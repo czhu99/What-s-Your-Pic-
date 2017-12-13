@@ -1,5 +1,6 @@
 package edu.illinois.finalproject;
 
+//unused imports are for commented out (not yet implemented) features
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -75,7 +76,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Creates intent for VerifyPic if camera operation was successful
+     * Creates intent for VerifyPic if camera operation was successful.
+     * Sends the photo taken and labels it "Picture"
      *
      * @param requestCode Request code called
      * @param resultCode  Result code given
@@ -94,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             // BitmapFactory.decodeFile(Environment.getExternalStorageDirectory() + "/MyPhoto.jpg");
 
             //Intent verifyIntent = new Intent(this, VerifyPicActivity.class);
-            //verifyIntent.putExtra("Picture", picture);
+            //verifyIntent.putExtra("picture", picture);
             //startActivity(verifyIntent);
         }
     }

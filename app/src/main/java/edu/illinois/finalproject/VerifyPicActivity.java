@@ -65,15 +65,15 @@ public class VerifyPicActivity extends AppCompatActivity {
         uploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String caption = captionEditText.getText().toString();
-                if (caption.length() < MIN_CAPTION_LEN) {
-                    showToast(getString(R.string.short_caption));
-                } else if (caption.length() > MAX_CAPTION_LEN) {
-                    showToast(getString(R.string.long_caption));
-                } else {
-                    setNextPhotoNumAndUpload();
-                    finish();
-                }
+            String caption = captionEditText.getText().toString();
+            if (caption.length() < MIN_CAPTION_LEN) {
+                showToast(getString(R.string.short_caption));
+            } else if (caption.length() > MAX_CAPTION_LEN) {
+                showToast(getString(R.string.long_caption));
+            } else {
+                setNextPhotoNumAndUpload();
+                finish();
+            }
             }
         });
     }
@@ -117,8 +117,7 @@ public class VerifyPicActivity extends AppCompatActivity {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef =
                 storage.getReferenceFromUrl(getString(R.string.storage_directory_fb));
-        StorageReference imageReference = storageRef.child(getString(R.string.image) +
-                photoNumber + getString(R.string.dot_jpg));
+        StorageReference imageReference = storageRef.child(getString(R.string.image) + photoNumber + getString(R.string.dot_jpg));
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, MAX_QUALITY, byteArrayOutputStream);
         byte[] data = byteArrayOutputStream.toByteArray();
